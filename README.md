@@ -74,6 +74,9 @@ EDCloud expose le cloud EcoleDirecte en tant que lecteur/dossier virtuel dans l'
    # ou équivalent selon ta distribution
    ```
 2. Télécharge `EDCloud-Linux` depuis la page [Releases](../../releases)
+   ```bash
+   curl -L https://github.com/natchen007/ed-cloud/releases/latest/download/EDCloud-Linux -o EDCloud-Linux
+   ```
 3. Rends-le exécutable et lance-le :
    ```bash
    chmod +x EDCloud-Linux
@@ -91,6 +94,9 @@ EDCloud expose le cloud EcoleDirecte en tant que lecteur/dossier virtuel dans l'
    Ou télécharge depuis [osxfuse.github.io](https://osxfuse.github.io/)
 
 2. Télécharge `EDCloud-macOS` depuis la page [Releases](../../releases)
+   ```bash
+   curl -L https://github.com/natchen007/ed-cloud/releases/latest/download/EDCloud-macOS -o EDCloud-macOS
+   ```
 3. Rends-le exécutable et lance-le :
    ```bash
    chmod +x EDCloud-macOS
