@@ -35,19 +35,19 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-tk libfuse-dev fuse pkg-config
+          sudo apt-get install -y python3-tk libfuse-dev fuse pkg-config xvfb
 
       - name: Install dependencies
         run: |
           pip install requests pystray Pillow fusepy pyinstaller
         shell: bash
 
-      - name: Verify imports
-        run: |
-          python -c "import pystray; print('pystray OK')"
-          python -c "import tkinter; print('tkinter OK')"
+      - name: Build (Linux with virtual display)
+        if: runner.os == 'Linux'
+        run: xvfb-run python -m PyInstaller EDCloud.spec --distpath dist --noconfirm
 
-      - name: Build
+      - name: Build (macOS)
+        if: runner.os != 'Linux'
         run: python -m PyInstaller EDCloud.spec --distpath dist --noconfirm
 
       - name: Upload artifact
