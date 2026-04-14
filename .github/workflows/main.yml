@@ -1,0 +1,72 @@
+name: Build EDCloud
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: EDCloud-Windows
+            ext: .exe
+          - os: ubuntu-latest
+            artifact: EDCloud-Linux
+            ext: ""
+          - os: macos-latest
+            artifact: EDCloud-macOS
+            ext: ""
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build
+        run: python -m PyInstaller EDCloud.spec --distpath dist --noconfirm
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/EDCloud${{ matrix.ext }}
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Prepare release files
+        run: |
+          mv artifacts/EDCloud-Windows/EDCloud.exe artifacts/EDCloud-Windows.exe
+          mv artifacts/EDCloud-Linux/EDCloud artifacts/EDCloud-Linux
+          mv artifacts/EDCloud-macOS/EDCloud artifacts/EDCloud-macOS
+          chmod +x artifacts/EDCloud-Linux artifacts/EDCloud-macOS
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/EDCloud-Windows.exe
+            artifacts/EDCloud-Linux
+            artifacts/EDCloud-macOS

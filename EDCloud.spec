@@ -1,15 +1,10 @@
-# -*- mode: python ; coding: utf-8 -*-
-# PyInstaller spec for EDCloud
-# Note: WinFSP doit etre installe sur la machine cible (driver kernel).
+import sys
 
 block_cipher = None
 
-a = Analysis(
-    ['main.py'],
-    pathex=[],
-    binaries=[],
-    datas=[],
-    hiddenimports=[
+_platform_imports = []
+if sys.platform == "win32":
+    _platform_imports = [
         'winfspy',
         'winfspy.plumbing',
         'winfspy.plumbing.bindings',
@@ -24,8 +19,25 @@ a = Analysis(
         'cffi',
         '_cffi_backend',
         'winreg',
-        'pystray',
         'pystray._win32',
+    ]
+else:
+    _platform_imports = [
+        'fuse',
+    ]
+    if sys.platform == "darwin":
+        _platform_imports.append('pystray._darwin')
+    else:
+        _platform_imports.append('pystray._appindicator')
+        _platform_imports.append('pystray._xorg')
+
+a = Analysis(
+    ['main.py'],
+    pathex=[],
+    binaries=[],
+    datas=[],
+    hiddenimports=_platform_imports + [
+        'pystray',
         'PIL',
         'PIL.Image',
         'PIL.ImageDraw',

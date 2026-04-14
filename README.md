@@ -1,46 +1,78 @@
 # EDCloud
 
-### **Monte ton cloud EcoleDirecte comme un vrai lecteur Windows.**
+### **Monte ton cloud EcoleDirecte comme un vrai lecteur sur Windows, Linux et macOS.**
 
-EDCloud utilise [WinFSP](https://winfsp.dev) pour exposer le cloud EcoleDirecte en tant que lecteur virtuel dans l'Explorateur de fichiers : lecture, écriture, glisser-déposer, renommage, création de dossiers inclus.
+EDCloud expose le cloud EcoleDirecte en tant que lecteur/dossier virtuel dans l'explorateur de fichiers : lecture, écriture, glisser-déposer, renommage, création de dossiers inclus.
+
+- **Windows** : utilise [WinFSP](https://winfsp.dev) pour monter un lecteur virtuel (ex. `E:`)
+- **Linux** : utilise [FUSE](https://github.com/libfuse/libfuse) pour monter un dossier (ex. `~/EDCloud`)
+- **macOS** : utilise [macFUSE](https://osxfuse.github.io/) pour monter un dossier (ex. `~/EDCloud`)
 
 ## Fonctionnalités
 
-- Lecteur virtuel natif Windows (drag & drop, copier-coller, tout fonctionne)
+- Lecteur/dossier virtuel natif (drag & drop, copier-coller, tout fonctionne)
 - Icône dans la barre système (system tray)
 - Connexion guidée au premier lancement (ouverture du navigateur → coller le token)
-- Credentials stockés dans `%APPDATA%\EDCloud\config.json`
+- Credentials stockés dans un fichier de config local
 - Auto-refresh de l'arborescence toutes les 30 secondes
-- Notifications Windows pour les erreurs d'extension de fichier
+- Notifications pour les erreurs d'extension de fichier
 - Déplacement / copie de fichiers entre dossiers
-- Logs dans `%APPDATA%\EDCloud\edcloud.log`
+- Logs dans le dossier de config
+
+### Emplacement des fichiers de configuration
+
+| OS | Chemin |
+|----|--------|
+| Windows | `%APPDATA%\EDCloud\` |
+| Linux | `~/.config/EDCloud/` (ou `$XDG_CONFIG_HOME/EDCloud/`) |
+| macOS | `~/Library/Application Support/EDCloud/` |
 
 ---
 
 ## Prérequis
 
-### Sur la machine cible (exécution)
+### Windows
 
 | Logiciel | Lien |
 |----------|------|
 | **WinFSP** (driver kernel, obligatoire) | [winfsp.dev/rel](https://winfsp.dev/rel/) |
 
-> WinFSP doit être installé **avant** de lancer EDCloud.
+### Linux
+
+| Logiciel | Installation |
+|----------|-------------|
+| **FUSE** | `sudo apt install fuse` (Debian/Ubuntu) ou équivalent |
+
+### macOS
+
+| Logiciel | Lien |
+|----------|------|
+| **macFUSE** | [osxfuse.github.io](https://osxfuse.github.io/) |
 
 ### Pour builder (développeurs)
 
 - Python 3.10 ou supérieur
-- Microsoft Visual C++ Build Tools (requis par `winfspy`) — [télécharger](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+- Windows : Microsoft Visual C++ Build Tools (requis par `winfspy`) — [télécharger](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 ---
 
 ## Installation rapide
 
+### Windows
+
 1. Installe [WinFSP](https://winfsp.dev/rel/)
 2. Télécharge `EDCloud.exe` depuis la page [Releases](../../releases)
 3. Lance `EDCloud.exe`
-4. Au premier démarrage : le navigateur s'ouvre sur la page d'autorisation → connecte-toi à EcoleDirecte → copie le token → colle-le dans la fenêtre qui s'affiche
+4. Au premier démarrage : le navigateur s'ouvre → connecte-toi à EcoleDirecte → copie le token → colle-le
 5. Le lecteur `E:` apparaît dans l'Explorateur
+
+### Linux / macOS
+
+1. Installe FUSE (`sudo apt install fuse`) ou macFUSE
+2. `pip install -r requirements.txt`
+3. `python main.py`
+4. Au premier démarrage : le navigateur s'ouvre → connecte-toi à EcoleDirecte → copie le token → colle-le
+5. Le dossier `~/EDCloud` apparaît
 
 > Pour changer de compte : clic droit sur l'icône systray → **Reconnecter (changer de token)**
 
@@ -49,19 +81,21 @@ EDCloud utilise [WinFSP](https://winfsp.dev) pour exposer le cloud EcoleDirecte 
 ## Utilisation en ligne de commande
 
 ```
-EDCloud.exe [options]
+python main.py [options]
 
 Options :
-  -m, --mount-point E:    Lettre de lecteur (défaut : E:)
-  -t, --token TOKEN       Token (bypass la saisie graphique)
-  -v, --verbose           Logs détaillés
-  -d, --debug             Mode debug WinFSP
-      --reset-token       Forcer la re-saisie du token
+  -m, --mount-point PATH    Point de montage (Windows: E:, Linux/Mac: ~/EDCloud)
+  -t, --token TOKEN         Token (bypass la saisie graphique)
+  -v, --verbose             Logs détaillés
+  -d, --debug               Mode debug (Windows: WinFSP debug)
+      --reset-token         Forcer la re-saisie du token
 ```
 
 ---
 
 ## Build depuis les sources
+
+### Windows
 
 ```bat
 git clone https://github.com/natchen007/ed-cloud.git
@@ -73,5 +107,16 @@ pip install pyinstaller
 build.bat
 ```
 
-L'exe est généré dans `dist\EDCloud.exe`.
+### Linux / macOS
+
+```bash
+git clone https://github.com/natchen007/ed-cloud.git
+cd ed-cloud
+
+pip install -r requirements.txt
+pip install pyinstaller
+
+chmod +x build.sh
+./build.sh
+```
 
