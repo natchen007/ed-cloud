@@ -66,13 +66,40 @@ EDCloud expose le cloud EcoleDirecte en tant que lecteur/dossier virtuel dans l'
 4. Au premier démarrage : le navigateur s'ouvre → connecte-toi à EcoleDirecte → copie le token → colle-le
 5. Le lecteur `E:` apparaît dans l'Explorateur
 
-### Linux / macOS
+### Linux
 
-1. Installe FUSE (`sudo apt install fuse`) ou macFUSE
-2. `pip install -r requirements.txt`
-3. `python main.py`
+1. Installe FUSE :
+   ```bash
+   sudo apt install fuse libfuse2  # Debian/Ubuntu
+   # ou équivalent selon ta distribution
+   ```
+2. Télécharge `EDCloud-Linux` depuis la page [Releases](../../releases)
+3. Rends-le exécutable et lance-le :
+   ```bash
+   chmod +x EDCloud-Linux
+   ./EDCloud-Linux
+   ```
 4. Au premier démarrage : le navigateur s'ouvre → connecte-toi à EcoleDirecte → copie le token → colle-le
 5. Le dossier `~/EDCloud` apparaît
+
+### macOS
+
+1. Installe macFUSE :
+   ```bash
+   brew install --cask macfuse
+   ```
+   Ou télécharge depuis [osxfuse.github.io](https://osxfuse.github.io/)
+
+2. Télécharge `EDCloud-macOS` depuis la page [Releases](../../releases)
+3. Rends-le exécutable et lance-le :
+   ```bash
+   chmod +x EDCloud-macOS
+   ./EDCloud-macOS
+   ```
+4. Au premier démarrage : le navigateur s'ouvre → connecte-toi à EcoleDirecte → copie le token → colle-le
+5. Le dossier `~/EDCloud` apparaît
+
+> **Note macOS :** Un avertissement de sécurité peut apparaître au premier lancement. Aller dans *Préférences Système > Sécurité et confidentialité* et cliquer "Ouvrir quand même".
 
 > Pour changer de compte : clic droit sur l'icône systray → **Reconnecter (changer de token)**
 
@@ -80,11 +107,27 @@ EDCloud expose le cloud EcoleDirecte en tant que lecteur/dossier virtuel dans l'
 
 ## Utilisation en ligne de commande
 
+### Windows
 ```
-python main.py [options]
+EDCloud.exe [options]
+```
 
-Options :
-  -m, --mount-point PATH    Point de montage (Windows: E:, Linux/Mac: ~/EDCloud)
+### Linux
+```bash
+./EDCloud-Linux [options]
+```
+
+### macOS
+```bash
+./EDCloud-macOS [options]
+```
+
+### Options communes
+
+```
+  -m, --mount-point PATH    Point de montage 
+                            Windows: E:
+                            Linux/Mac: ~/EDCloud
   -t, --token TOKEN         Token (bypass la saisie graphique)
   -v, --verbose             Logs détaillés
   -d, --debug               Mode debug (Windows: WinFSP debug)
