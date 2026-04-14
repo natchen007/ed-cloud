@@ -58,15 +58,15 @@ jobs:
 
       - name: Prepare release files
         run: |
-          mv artifacts/EDCloud-Windows/EDCloud.exe artifacts/EDCloud-Windows.exe
-          mv artifacts/EDCloud-Linux/EDCloud artifacts/EDCloud-Linux
-          mv artifacts/EDCloud-macOS/EDCloud artifacts/EDCloud-macOS
-          chmod +x artifacts/EDCloud-Linux artifacts/EDCloud-macOS
+          mv artifacts/EDCloud-Windows/EDCloud.exe EDCloud-Windows.exe
+          mv artifacts/EDCloud-Linux/EDCloud EDCloud-Linux
+          mv artifacts/EDCloud-macOS/EDCloud EDCloud-macOS
+          chmod +x EDCloud-Linux EDCloud-macOS
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            artifacts/EDCloud-Windows.exe
-            artifacts/EDCloud-Linux
-            artifacts/EDCloud-macOS
+            EDCloud-Windows.exe
+            EDCloud-Linux
+            EDCloud-macOS
