@@ -1,6 +1,10 @@
 import sys
+from PyInstaller.utils.hooks import collect_all
 
 block_cipher = None
+
+pystray_datas, pystray_binaries, pystray_hiddenimports = collect_all('pystray')
+pil_datas, pil_binaries, pil_hiddenimports = collect_all('PIL')
 
 _platform_imports = []
 if sys.platform == "win32":
@@ -34,13 +38,9 @@ else:
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[],
-    datas=[],
-    hiddenimports=_platform_imports + [
-        'pystray',
-        'PIL',
-        'PIL.Image',
-        'PIL.ImageDraw',
+    binaries=pystray_binaries + pil_binaries,
+    datas=pystray_datas + pil_datas,
+    hiddenimports=_platform_imports + pystray_hiddenimports + pil_hiddenimports + [
         'tkinter',
         'tkinter.messagebox',
         'tkinter.simpledialog',
