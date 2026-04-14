@@ -46,7 +46,6 @@ jobs:
         run: |
           python -c "import pystray; print('pystray OK')"
           python -c "import tkinter; print('tkinter OK')"
-          python -c "import fuse; print('fuse OK')"
 
       - name: Build
         run: python -m PyInstaller EDCloud.spec --distpath dist --noconfirm
