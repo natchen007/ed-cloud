@@ -32,8 +32,12 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install requests pystray Pillow pyinstaller
           pip install -r requirements.txt
-          pip install pyinstaller
+        shell: bash
+
+      - name: Verify pystray
+        run: python -c "import pystray; print('pystray OK:', pystray.__file__)"
 
       - name: Build
         run: python -m PyInstaller EDCloud.spec --distpath dist --noconfirm

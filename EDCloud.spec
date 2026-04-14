@@ -1,10 +1,20 @@
 import sys
-from PyInstaller.utils.hooks import collect_all
+from PyInstaller.utils.hooks import collect_all, collect_submodules
 
 block_cipher = None
 
 pystray_datas, pystray_binaries, pystray_hiddenimports = collect_all('pystray')
 pil_datas, pil_binaries, pil_hiddenimports = collect_all('PIL')
+pystray_hiddenimports += collect_submodules('pystray')
+
+_extra_datas = []
+try:
+    six_datas, six_binaries, six_hiddenimports = collect_all('six')
+    pystray_datas += six_datas
+    pystray_binaries += six_binaries
+    pystray_hiddenimports += six_hiddenimports
+except Exception:
+    pass
 
 _platform_imports = []
 if sys.platform == "win32":
@@ -57,6 +67,8 @@ a = Analysis(
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
+_icon = 'EDCloud.ico' if sys.platform == "win32" else None
+
 exe = EXE(
     pyz,
     a.scripts,
@@ -72,7 +84,7 @@ exe = EXE(
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,
-    icon='EDCloud.ico',
+    icon=_icon,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
