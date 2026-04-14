@@ -12,8 +12,13 @@ if sys.platform.startswith("linux"):
 
 import pystray
 from PIL import Image, ImageDraw
-import tkinter as tk
-from tkinter import messagebox, simpledialog
+
+try:
+    import tkinter as tk
+    from tkinter import messagebox, simpledialog
+    _HAS_TK = True
+except ImportError:
+    _HAS_TK = False
 
 from ed_api import EcoleDirecteAPI
 
@@ -67,36 +72,41 @@ def setup_logging(verbose=False):
         handlers=handlers,
     )
 
-def _tk_root():
-    root = tk.Tk()
-    root.withdraw()
-    root.attributes("-topmost", True)
-    return root
-
-
 def ask_token():
-    root = _tk_root()
     webbrowser.open(AUTHORIZE_URL)
-    messagebox.showinfo(
-        "EDCloud – Connexion requise",
-        "Votre navigateur s'est ouvert sur la page d'autorisation.\n\n"
-        "Connectez-vous a EcoleDirecte, copiez le token affiche "
-        "puis cliquez OK.",
-        parent=root,
-    )
-    token = simpledialog.askstring(
-        "EDCloud – Coller le token",
-        "Token :",
-        parent=root,
-    )
-    root.destroy()
-    return token.strip() if token else None
+    if _HAS_TK:
+        root = tk.Tk()
+        root.withdraw()
+        root.attributes("-topmost", True)
+        messagebox.showinfo(
+            "EDCloud – Connexion requise",
+            "Votre navigateur s'est ouvert sur la page d'autorisation.\n\n"
+            "Connectez-vous a EcoleDirecte, copiez le token affiche "
+            "puis cliquez OK.",
+            parent=root,
+        )
+        token = simpledialog.askstring(
+            "EDCloud – Coller le token",
+            "Token :",
+            parent=root,
+        )
+        root.destroy()
+        return token.strip() if token else None
+    else:
+        print(f"Ouvrez ce lien dans votre navigateur :\n{AUTHORIZE_URL}")
+        token = input("Collez le token ici : ").strip()
+        return token if token else None
 
 
 def show_error(message):
-    root = _tk_root()
-    messagebox.showerror("EDCloud – Erreur", message, parent=root)
-    root.destroy()
+    if _HAS_TK:
+        root = tk.Tk()
+        root.withdraw()
+        root.attributes("-topmost", True)
+        messagebox.showerror("EDCloud – Erreur", message, parent=root)
+        root.destroy()
+    else:
+        print(f"ERREUR : {message}", file=sys.stderr)
 
 def _make_icon_image():
     size = 64
