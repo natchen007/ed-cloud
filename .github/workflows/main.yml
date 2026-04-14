@@ -35,7 +35,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-tk libfuse-dev
+          sudo apt-get install -y python3-tk libfuse-dev fuse pkg-config
 
       - name: Install dependencies
         run: |
@@ -43,7 +43,10 @@ jobs:
         shell: bash
 
       - name: Verify imports
-        run: python -c "import pystray; import PIL; print('OK')"
+        run: |
+          python -c "import pystray; print('pystray OK')"
+          python -c "import tkinter; print('tkinter OK')"
+          python -c "import fuse; print('fuse OK')"
 
       - name: Build
         run: python -m PyInstaller EDCloud.spec --distpath dist --noconfirm
