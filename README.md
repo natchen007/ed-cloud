@@ -64,7 +64,7 @@ Options :
 ## Build depuis les sources
 
 ```bat
-git clone https://github.com/TON_USER/EDCloud.git
+git clone https://github.com/natchen007/ed-cloud.git
 cd EDCloud
 
 pip install -r requirements.txt
