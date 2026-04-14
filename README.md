@@ -65,7 +65,7 @@ Options :
 
 ```bat
 git clone https://github.com/natchen007/ed-cloud.git
-cd EDCloud
+cd ed-cloud
 
 pip install -r requirements.txt
 pip install pyinstaller
