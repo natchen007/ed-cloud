@@ -7,6 +7,9 @@ import threading
 import webbrowser
 from pathlib import Path
 
+if sys.platform.startswith("linux"):
+    os.environ.setdefault("PYSTRAY_BACKEND", "xorg")
+
 import pystray
 from PIL import Image, ImageDraw
 import tkinter as tk
